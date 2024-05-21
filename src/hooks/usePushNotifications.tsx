@@ -33,18 +33,19 @@ export const usePushNotifications = (): PushNotificationState => {
             if (existingStatus !== "granted") {
                 const { status } = await Notifications.requestPermissionsAsync();
                 finalStatus = status;
-            };
+            }
             if (finalStatus !== "granted") {
                 alert("Failed to get push token for notification");
                 return;
-            };
+            }
 
             token = await Notifications.getExpoPushTokenAsync({
                 projectId: Constants.expoConfig?.extra?.eas.projectId,
             });
-        } else {
-            alert("Must be using a physical device for notification")
-        };
+        }
+        else {
+            alert("Must be using a physical device for notification");
+        }
 
         if (Platform.OS === "android") {
             Notifications.setNotificationChannelAsync("default", {
@@ -53,7 +54,7 @@ export const usePushNotifications = (): PushNotificationState => {
                 vibrationPattern: [0, 250, 250, 250],
                 lightColor: "#FF231F7C",
             });
-        };
+        }
 
         return token;
     };
@@ -75,7 +76,7 @@ export const usePushNotifications = (): PushNotificationState => {
             Notifications.removeNotificationSubscription(notificationListener.current!);
             Notifications.removeNotificationSubscription(responseListener.current!);
         };
-    }, [])
+    }, []);
 
     return {
         expoPushToken,

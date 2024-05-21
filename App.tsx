@@ -2,37 +2,30 @@ import { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Clipboard from 'expo-clipboard';
-import Animated, { Easing, ReduceMotion, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { usePushNotifications } from './src/hooks/usePushNotifications';
 import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   const { expoPushToken } = usePushNotifications();
 
-  const translateY = useSharedValue(600);
-
-  const reanimatedCard = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }],
-    };
-  }, []);
+  const translateY = useSharedValue(1000);
+  const reanimatedCard = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }), []);
 
   useEffect(() => {
-    translateY.value = withTiming(0, { duration: 1000, easing: Easing.inOut(Easing.quad), reduceMotion: ReduceMotion.System })
+    translateY.value = withTiming(0, { duration: 1000 });
   }, []);
 
   const copyToClipboard = async () => {
-    if (expoPushToken?.data) {
-      await Clipboard.setStringAsync(expoPushToken?.data);
-    };
+    if (expoPushToken?.data) await Clipboard.setStringAsync(expoPushToken?.data);
   };
 
   return (
     <LinearGradient style={styles.container} colors={['#663388', '#443388']}>
       <StatusBar style='light' />
-      <View style={styles.banner}>
-
-      </View>
+      <View style={styles.banner} />
       <Animated.View style={[styles.card, reanimatedCard]}>
         <Text style={styles.title}>Push Notifications</Text>
         <TouchableOpacity style={styles.button} onPress={copyToClipboard}>
